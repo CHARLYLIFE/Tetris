@@ -1,18 +1,14 @@
+
 {
-  "name": "Block Chaos",
+  "id": "./",
+  "name": "Block Chaos - Block Puzzle",
   "short_name": "Block Chaos",
-  "description": "Un juego de bloques rápido, adictivo y desafiante.",
+  "description": "Coloca bloques, completa líneas y supera tu récord.",
+  "lang": "es",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#03070d",
-  "theme_color": "#07111f",
-  "icons": [
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
+  "background_color": "#080d19",
+  "theme_color": "#080d19"
 }

@@ -1,59 +1,44 @@
-const CACHE_NAME = "block-chaos-v1";
 
+const CACHE = "block-chaos-v1";
 const FILES = [
-    "./",
-    "./index.html",
-    "./manifest.json",
-    "./icon-512.png"
+  "./",
+  "./index.html",
+  "./manifest.json"
 ];
 
 self.addEventListener("install", event => {
-
-    event.waitUntil(
-
-        caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(FILES))
-
-    );
-
-    self.skipWaiting();
-
+  event.waitUntil(
+    caches.open(CACHE)
+      .then(cache => cache.addAll(FILES))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener("activate", event => {
-
-    event.waitUntil(
-
-        caches.keys().then(keys =>
-
-            Promise.all(
-
-                keys
-                    .filter(key => key !== CACHE_NAME)
-                    .map(key => caches.delete(key))
-
-            )
-
-        )
-
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(
+      keys.filter(key => key !== CACHE)
+        .map(key => caches.delete(key))
     );
-
-    self.clients.claim();
-
+    await self.clients.claim();
+  })());
 });
 
 self.addEventListener("fetch", event => {
+  if (event.request.method !== "GET") return;
 
-    event.respondWith(
+  event.respondWith((async () => {
+    const cached = await caches.match(event.request);
+    if (cached) return cached;
 
-        caches.match(event.request)
-            .then(cached => {
-
-                return cached ||
-                    fetch(event.request);
-
-            })
-
-    );
-
+    try {
+      return await fetch(event.request);
+    } catch {
+      return new Response("Sin conexión", {
+        status: 503,
+        headers: {"Content-Type":"text/plain;charset=utf-8"}
+      });
+    }
+  })());
 });
